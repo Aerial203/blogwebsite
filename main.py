@@ -177,6 +177,9 @@ def about():
 def contact():
     contact_form = ContactForm()
     if contact_form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("You need to login or register to send this message.")
+            return redirect(url_for("login"))
         name = contact_form.name.data
         email = contact_form.email.data
         message = contact_form.message.data
