@@ -182,7 +182,7 @@ def contact():
         message = contact_form.message.data
         send_msg(name, email, message)
         flash("Your message has been send")
-        return render_template("contact.html", current_user=current_user, form=contact_form)
+        return render_template("contact.html", current_user=current_user, data=True)
 
     return render_template("contact.html", current_user=current_user, form=contact_form)
 

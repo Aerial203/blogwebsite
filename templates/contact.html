@@ -27,9 +27,11 @@
           {% endfor %}
         {% endif %}
       {% endwith %}
+        {% if not data: %}
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='Message') }}
         {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+        {% endif %}
       </div>
     </div>
   </div>
