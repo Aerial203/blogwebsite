@@ -57,7 +57,6 @@ class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     author = relationship("User", back_populates="posts")
-    name = db.Column(db.String, nullable=False)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
     date = db.Column(db.String(250), nullable=False)
@@ -202,7 +201,6 @@ def add_new_post():
             body=form.body.data,
             img_url=form.img_url.data,
             author=current_user,
-            name=form.name.data,
             date=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
@@ -221,14 +219,12 @@ def edit_post(post_id):
         subtitle=post.subtitle,
         img_url=post.img_url,
         author=current_user,
-        name=post.name,
         body=post.body
     )
     if edit_form.validate_on_submit():
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
-        post.name = edit_form.name.data
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
