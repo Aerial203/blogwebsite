@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from forms import LoginForm, RegisterForm, CreatePostForm, CommentForm
 from flask_gravatar import Gravatar
+import smtplib
 import os
 
 app = Flask(__name__)
@@ -23,6 +24,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+EMAIL = os.environ.get("EMAIL")
+PASSWORD = os.environ.get("PASSWORD")
+
+
+def send_msg(name, email, msg):
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+        connection.login(EMAIL, PASSWORD)
+        message = f"Subject \n\n name:{name}\nemail: {email}\nmessage:{msg}"
+        connection.sendmail(from_addr=EMAIL, to_addrs=EMAIL, msg=message)
+
 
 
 @login_manager.user_loader
@@ -162,9 +173,18 @@ def about():
     return render_template("about.html", current_user=current_user)
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html", current_user=current_user)
+    contact_form = ContactForm()
+    if contact_form.validate_on_submit():
+        name = contact_form.name.data
+        email = contact_form.email.data
+        message = contact_form.message.data
+        send_msg(name, email, message)
+        flash("Your message has been send")
+        return render_template("contact.html", current_user=current_user, form=contact_form)
+
+    return render_template("contact.html", current_user=current_user, form=contact_form)
 
 
 @app.route("/new-post", methods=["GET", "POST"])
