@@ -1,5 +1,8 @@
-{% include "header.html" %}
+{% extends 'bootstrap/base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% include "header.html" %}
   <!-- Page Header -->
   <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/contact-bg.jpg')}}')">
     <div class="overlay"></div>
@@ -23,7 +26,7 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
           {% for message in messages %}
-           <p style="color:red;">{{ message }}</p>
+           <p style="color: red;">{{ message }}</p>
           {% endfor %}
         {% endif %}
       {% endwith %}
@@ -38,4 +41,5 @@
 
   <hr>
 
-  {% include "footer.html" %}
+{% include "footer.html" %}
+{% endblock %}
