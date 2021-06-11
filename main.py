@@ -35,7 +35,6 @@ def send_msg(name, email, msg):
         connection.sendmail(from_addr=EMAIL, to_addrs=EMAIL, msg=message)
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -87,6 +86,8 @@ def admin_only(f):
 
 @app.route('/')
 def get_all_posts():
+    if not current_user.is_authenticated:
+        return redirect(url_for("login"))
     posts = BlogPost.query.all()
     return render_template("index.html", all_posts=posts, current_user=current_user)
 
